@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description"
+    content="Test your typing speed with accuracy and style. A premium, accessible typing test experience." />
+  <title>Typing Speed Test</title>
+
+  <!-- Preconnect for fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet" />
+
+  <link rel="stylesheet" href="index.css" />
+</head>
+
+<body>
+  <div class="app-wrapper">
+    <header class="topbar">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"
+          stroke-linecap="round" stroke-linejoin="round" class="logo-icon">
+          <path d="M4 7V4h16v3" />
+          <path d="M9 20h6" />
+          <path d="M12 4v16" />
+        </svg>
+        <h1>TypeSwift</h1>
+      </div>
+      <div class="controls-inline">
+        <label class="switch" aria-label="Toggle dark mode">
+          <input id="darkToggle" type="checkbox" />
+          <span class="slider">
+            <svg class="icon moon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+            </svg>
+            <svg class="icon sun" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z">
+              </path>
+            </svg>
+          </span>
+        </label>
+        <button id="startBtn" class="btn primary has-icon" aria-pressed="false">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+          </svg>
+          <span>Start</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="card glass-panel" id="appCard">
+        <div class="card-header">
+          <div class="modes" role="tablist" aria-label="Timer modes">
+            <button class="mode-btn" data-seconds="15" role="tab" aria-selected="false">15s</button>
+            <button class="mode-btn" data-seconds="30" role="tab" aria-selected="false">30s</button>
+            <button class="mode-btn active" data-seconds="60" role="tab" aria-selected="true">60s</button>
+          </div>
+          <div class="timer-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+            <span id="countdown" aria-live="polite">60</span>s
+          </div>
+        </div>
+
+        <div class="typing-container">
+          <div class="sentence-area" id="sentenceArea" aria-label="Typing passage">
+            <!-- Characters rendered here -->
+          </div>
+
+          <div class="blur-overlay"></div>
+
+          <!-- Hidden input -->
+          <textarea id="hiddenInput" aria-label="Typing input" autocomplete="off" autocorrect="off" autocapitalize="off"
+            spellcheck="false"></textarea>
+
+          <div class="caret-help">
+            <span class="key-hint">Tab</span> to restart · <span class="key-hint">Esc</span> to end
+          </div>
+        </div>
+
+        <div class="status-bar">
+          <div class="progress-track" title="Time progress">
+            <div id="timeProgress" class="progress-fill" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+              aria-valuenow="0"></div>
+          </div>
+        </div>
+
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <small>WPM</small>
+            <span id="wpm">0</span>
+          </div>
+          <div class="metric-card">
+            <small>Accuracy</small>
+            <span id="accuracy">100.0%</span>
+          </div>
+          <div class="metric-card">
+            <small>Chars</small>
+            <span id="charsTyped">0</span>
+          </div>
+          <div class="metric-card">
+            <small>Mistakes</small>
+            <span id="mistakes">0</span>
+          </div>
+        </div>
+
+        <footer class="card-footer">
+          <div class="actions">
+            <button id="retryBtn" class="btn secondary has-icon" title="Retry same sentence">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 4v6h-6" />
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+              </svg>
+              <span>Retry</span>
+            </button>
+            <button id="newBtn" class="btn secondary has-icon" title="New sentence">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+              </svg>
+              <span>New Test</span>
+            </button>
+          </div>
+
+          <!-- Added mobile mode select for better UX on small screens -->
+          <div class="mode-select mobile-only">
+            <select id="modeSelect" aria-label="Change timer mode">
+              <option value="15">15s</option>
+              <option value="30">30s</option>
+              <option value="60" selected>60s</option>
+            </select>
+          </div>
+        </footer>
+      </section>
+    </main>
+
+    <!-- Results overlay -->
+    <div id="overlay" class="overlay backdrop-blur" hidden aria-hidden="true">
+      <div class="overlay-card glass-panel" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+        <header class="overlay-header">
+          <h2 id="resultTitle">Session Reports</h2>
+          <button class="close-btn" id="closeOverlay" aria-label="Close results">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </header>
+
+        <div class="results-showcase">
+          <div class="big-stat">
+            <span class="label">WPM</span>
+            <strong id="finalWpm" class="gradient-text">0</strong>
+          </div>
+
+          <div class="secondary-stats">
+            <div class="stat-item"><small>Accuracy</small><strong id="finalAcc">0.0%</strong></div>
+            <div class="stat-item"><small>Chars</small><strong id="finalCorrect">0</strong>/<strong id="finalMistakes"
+                class="text-danger">0</strong></div>
+            <div class="stat-item"><small>Time</small><strong id="timeUsed">0s</strong></div>
+          </div>
+        </div>
+
+        <div class="overlay-actions">
+          <button id="overlayRetry" class="btn secondary">Retry</button>
+          <button id="overlayNew" class="btn primary">New Test</button>
+          <button id="overlayChange" class="btn text-only">Change Mode</button>
+        </div>
+
+        <div class="leaderboard-section">
+          <h3>Recent Best (This Mode)</h3>
+          <ol id="leaderboardList" class="lb-list"></ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARIA live region -->
+    <div id="ariaLive" class="visually-hidden" aria-live="polite" aria-atomic="true"></div>
+
+    <script src="script.js"></script>
+
+    <!-- Wave background decoration -->
+    <div class="background-waves"></div>
+  </div>
+</body>
+
+</html>
